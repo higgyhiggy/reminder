@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 )
@@ -20,29 +21,36 @@ func main() {
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
-	}
+	Check(err)
 	defer db.Close()
 
 	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
+	Check(err)
+
 	id := 99
 	name := "newhector"
 	fmt.Println("Successfully connected!")
 	sqlStatement := `
 	INSERT INTO student (id, name)
 	VALUES ($1, $2)`
+
 	_, err = db.Exec(sqlStatement, id, name)
+
+	Check(err)
+	fmt.Println("this is hector")
+}
+
+//
+func Check(err error) {
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
-       	fmt.Println("this is hector")
 }
 
 // fucntion to insert into table
+func insert(id int, name string) {
+
+}
 
 //function to send reminder via email
 
