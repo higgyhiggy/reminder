@@ -35,12 +35,25 @@ func main() {
 	VALUES ($1, $2)`
 
 	_, err = db.Exec(sqlStatement, id, name)
+	Check(err)
+	sqlStatement = `SELECT * FROM student WHERE id=$1;`
+
+	// Replace 3 with an ID from your database or another random
+	// value to test the no rows use case.
+	row := db.QueryRow(sqlStatement, id)
+	switch err := row.Scan(&id, &name); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		fmt.Println(id, name)
+	default:
+		panic(err)
+	}
 
 	Check(err)
-	fmt.Println("this is hector")
+
 }
 
-//
 func Check(err error) {
 	if err != nil {
 		log.Panic(err)
