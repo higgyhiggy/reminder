@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
+
+	"io/ioutil"
 
 	_ "github.com/lib/pq"
 )
@@ -15,6 +18,31 @@ const (
 	password = "postgres"
 	dbname   = "postgres"
 )
+
+func helloWorld(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		for k, v := range r.URL.Query() {
+			fmt.Printf("%s: %s\n%s", k, v, "yupp ha")
+
+		}
+		w.Write([]byte("Received a get request\n"))
+	case "POST":
+		reqBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%\n", reqBody)
+		w.Write([]byte("Received a POST request\n"))
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		w.Write([]byte(http.StatusText(http.StatusNotImplemented)))
+	}
+}
 
 func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
@@ -52,6 +80,8 @@ func main() {
 
 	Check(err)
 
+	http.HandleFunc("/", helloWorld)
+	http.ListenAndServe(":8000", nil)
 }
 
 func Check(err error) {
