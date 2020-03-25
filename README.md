@@ -8,9 +8,9 @@ This project is ment to keep a user organized by making technologies work togeth
 
 
 ## Requirements
-- [x ] postgres db
-- [ x] connect db with go 
-- [ x] setup reminders via server 
+- [x] postgres db
+- [x] connect db with go 
+- [x] setup reminders via server 
 - [ ] correctly insert reminders from server into db
 - [ ] check db for dates that are within certain time frame away
 - [ ] send email or text message to user about reminders.
